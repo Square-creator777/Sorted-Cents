@@ -1,4 +1,4 @@
-var CACHE = 'sorted-cents-a984c758';
+var CACHE = 'sorted-cents-7ae4cd88';
 var FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
@@ -13,6 +13,10 @@ self.addEventListener('fetch', function (e) {
     e.respondWith(fetch(req).then(function (r) { var cp = r.clone(); caches.open(CACHE).then(function (c) { c.put('./index.html', cp); }); return r; }).catch(function () { return caches.match('./index.html'); }));
     return;
   }
+  var u = new URL(req.url);
+  var mine = u.origin === self.location.origin || u.hostname === 'www.gstatic.com' || u.hostname === 'fonts.googleapis.com' || u.hostname === 'fonts.gstatic.com';
+  if (!mine) return;
+  if (u.hostname === 'www.gstatic.com' && u.pathname.indexOf('/firebasejs/') !== 0) return;
   e.respondWith(caches.match(req).then(function (hit) {
     return hit || fetch(req).then(function (r) {
       if (r && (r.ok || r.type === 'opaque')) { var cp = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, cp); }); }
