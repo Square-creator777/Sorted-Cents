@@ -62,6 +62,18 @@ body[data-screen="home"] .bgphoto { opacity: 0.16; }
 body[data-screen="setup"] .bgphoto { opacity: 0.22; background-position: center 0; background-size: auto 430px; -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%); mask-image: linear-gradient(to bottom, #000 58%, transparent 100%); }
 .wrap { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 .wrap > * { min-width: 0; }
+.lglogo { display: grid; place-items: center; margin: 28px auto 4px; width: 104px; height: 104px; border-radius: 30px; background: radial-gradient(circle at 50% 40%, #2a0a0e, #0d0506 70%); border: 1px solid #3a1015; box-shadow: 0 0 40px rgba(230, 20, 40, 0.25); }
+.lglogo svg { width: 62px; height: 62px; filter: drop-shadow(0 0 10px rgba(255, 40, 60, 0.55)); }
+.lgtitle { text-align: center; }
+#v-login .intro { text-align: center; }
+#lgForm { display: flex; flex-direction: column; gap: 14px; }
+.pwrow { display: flex; align-items: center; gap: 8px; }
+.pwrow input { flex: 1; min-width: 0; }
+.lglinks { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; }
+.lglinks .link { font-size: 14px; }
+.acct { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.acct h2 { display: none; }
+.acct p { margin: 0 !important; min-width: 0; overflow-wrap: anywhere; }
 .bootmsg { margin-top: 24px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: rgba(21, 20, 21, 0.85); display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
 .bootmsg span { color: var(--muted); font-size: 14px; }
 .screen { display: flex; flex-direction: column; gap: 14px; }
@@ -104,6 +116,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero > * { position: relative; z-index: 1; }
 
 
+.vnote { display: block; margin-top: 4px; font-size: 12px; color: rgba(255, 255, 255, 0.72); }
 .hero .vv, .hero .vl { text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55); }
 .hero > .gouge { position: absolute; z-index: 0; right: 4px; top: -40px; width: 250px; height: auto; opacity: 0; clip-path: inset(0 100% 0 0); pointer-events: none; filter: drop-shadow(0 0 6px rgba(255, 70, 80, 0.55)); }
 .hero.slashed > .gouge { opacity: 0.78; clip-path: inset(0 0 0 0); }
@@ -162,7 +175,7 @@ fieldset.field legend { margin-bottom: 8px; }
 form { display: flex; flex-direction: column; gap: 14px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 380px) { .row2 { grid-template-columns: 1fr; } }
-input[type="text"], input[type="date"], input[type="number"] {
+input[type="text"], input[type="date"], input[type="number"], input[type="email"], input[type="password"] {
   width: 100%; height: 48px; padding: 0 12px; font: inherit; color: var(--ink);
   background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
 }
@@ -349,12 +362,34 @@ details.more[open] summary { margin-bottom: 14px; }
   <p class="toast" id="toast" role="status" hidden></p>
 
   <!-- Início -->
+  <main class="screen" id="v-login" hidden>
+    <div class="lglogo" aria-hidden="true"><svg viewBox="0 0 85.6 100" focusable="false"><use href="#claw-on"/></svg></div>
+    <h2 class="stitle lgtitle" tabindex="-1">Sorted Cents</h2>
+    <p class="intro" id="lgIntro">Entre com seu e-mail. Seus Pix ficam salvos na sua conta e aparecem em qualquer celular.</p>
+    <form class="card" id="lgForm" autocomplete="on" novalidate>
+      <div class="field">
+        <label for="lgEmail">E-mail</label>
+        <input id="lgEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="voce@email.com">
+      </div>
+      <div class="field">
+        <label for="lgPass">Senha</label>
+        <div class="pwrow"><input id="lgPass" type="password" autocomplete="current-password" placeholder="Pelo menos 6 caracteres"><button class="link" type="button" id="lgShow" aria-pressed="false">Mostrar</button></div>
+      </div>
+      <button class="primary" type="submit" id="lgBtn">Entrar</button>
+      <p class="msg" id="lgMsg" role="status"></p>
+      <div class="lglinks">
+        <button class="link" type="button" id="lgSwitch">Não tem conta? Criar conta</button>
+        <button class="link" type="button" id="lgForgot">Esqueci minha senha</button>
+      </div>
+    </form>
+  </main>
+
   <main class="screen" id="v-home" hidden>
     <section class="hero" id="homeHero" aria-label="Seus valores">
       <svg class="gouge" viewBox="0 0 85.6 100" aria-hidden="true" focusable="false"><use href="#claw-gouge"/></svg>
       <div class="vals">
         <div class="val"><span class="vl" id="vlTotal">Total recebido</span><b class="vv" id="vTotal">R$ …</b></div>
-        <div class="val"><span class="vl" id="vlSaved">Total guardado</span><b class="vv" id="vSaved">R$ …</b></div>
+        <div class="val"><span class="vl" id="vlSaved">Total guardado</span><b class="vv" id="vSaved">R$ …</b><small class="vnote" id="vStartNote" hidden></small></div>
       </div>
     </section>
     <nav class="menu" aria-label="Menu">
@@ -390,6 +425,11 @@ details.more[open] summary { margin-bottom: 14px; }
     <div class="setupspacer" id="setupLion" hidden></div>
     <h2 class="stitle" id="profTitle" tabindex="-1">Meu perfil</h2>
     <p class="intro" id="profIntro" hidden>Responda rápido e o app fica com a sua cara. Você muda tudo depois em Perfil.</p>
+    <section class="card acct" id="acctCard" aria-label="Minha conta" hidden>
+      <h2>Minha conta</h2>
+      <p class="muted" style="margin:0 0 12px;font-size:14px">Conectado como <b id="acctEmail"></b><span id="acctAdm" hidden> · administrador</span></p>
+      <button class="ghost" type="button" data-act="logout">Sair da conta</button>
+    </section>
     <form class="card" id="profForm" autocomplete="off">
       <div class="field">
         <span class="flabel" id="photoLbl">Foto de perfil</span>
@@ -417,8 +457,13 @@ details.more[open] summary { margin-bottom: 14px; }
         <label for="pMeta">Meta de guardar no mês <em>(pode ficar em branco)</em></label>
         <div class="money"><span>R$</span><input id="pMeta" type="text" inputmode="decimal" placeholder="0,00"></div>
       </div>
+      <div class="field">
+        <label for="pStart">Quanto você já tem guardado <em>(antes de usar o app, pode ficar em branco)</em></label>
+        <div class="money"><span>R$</span><input id="pStart" type="text" inputmode="decimal" placeholder="0,00"></div>
+        <p class="note" style="margin:0">Esse valor entra no seu Total guardado.</p>
+      </div>
       <label class="check"><input type="checkbox" id="pHide"> Começar com os valores escondidos</label>
-      <label class="check"><input type="checkbox" id="pDemo"> Mostrar valores de exemplo (para testar)</label>
+      <label class="check" id="pDemoRow"><input type="checkbox" id="pDemo"> Mostrar valores de exemplo (só para o administrador)</label>
       <button class="primary" id="profBtn" type="submit">Salvar</button>
       <p class="msg" id="profMsg" role="status"></p>
     </form>
@@ -614,13 +659,19 @@ window.addEventListener('error', function (e) {
     { id: 'demo-entregas', name: 'Entregas', color: '#FF9F5A', demo: true },
     { id: 'demo-gorjetas', name: 'Gorjetas', color: '#B38CFF', demo: true }
   ];
-  var DEFAULT_CFG = { meta: 0, pct: 20, days: [1, 2, 3, 4, 5, 6], name: '', period: 'all', hide: false, setup: false, demo: true, sources: [], inbox: [], seen: [], photo: '', whoSrc: {} };
+  var DEFAULT_CFG = { meta: 0, start: 0, pct: 20, days: [1, 2, 3, 4, 5, 6], name: '', period: 'all', hide: false, setup: false, demo: true, sources: [], inbox: [], seen: [], photo: '', whoSrc: {} };
   var cfg = Object.assign({}, DEFAULT_CFG);
   var entries = [];
   var store = 'local';
   var col = null;
   var ready = false;
   var booted = false;
+  var isAdmin = false;
+  var ADMIN_EMAIL = 'marceloloureiromaia2008@gmail.com';
+  var FB_CONFIG = {"apiKey": "AIzaSyDy2R3x8qM_saRhEj1Lm6T32dQsUeH4xHQ", "authDomain": "sorted-cents.firebaseapp.com", "projectId": "sorted-cents", "storageBucket": "sorted-cents.firebasestorage.app", "messagingSenderId": "171582513297", "appId": "1:171582513297:web:313d8873b41d2206d71f30"};
+  var FB_VER = '10.12.2';
+  var fb = null, fbUser = null, fbUnsub = null, lgMode = 'in';
+  function demoOn() { return cfg.demo && isAdmin; }
   var hidden = false;
   var current = 'home';
   var pendingDel = null;
@@ -636,7 +687,7 @@ window.addEventListener('error', function (e) {
 
   /* valor mostrado no início: some quando o leão fecha os olhos */
   var mv = function (c) { return hidden ? 'R$ ••••' : money(c); };
-  var GM = function () { return cfg.meta || (cfg.demo ? DEMO_META : 0); };
+  var GM = function () { return cfg.meta || (demoOn() ? DEMO_META : 0); };
 
   function cleanWhoSrc(m, sources) {
     var out = {}, n = 0;
@@ -667,7 +718,7 @@ window.addEventListener('error', function (e) {
     }) : [];
     var seen = Array.isArray(v.seen) ? v.seen.filter(function (x) { return typeof x === 'string'; }).slice(-400) : [];
     return {
-      meta: Math.max(0, Math.round(Number(v.meta) || 0)), pct: pct, days: days,
+      meta: Math.max(0, Math.round(Number(v.meta) || 0)), start: Math.max(0, Math.round(Number(v.start) || 0)), pct: pct, days: days,
       name: typeof v.name === 'string' ? v.name.trim().slice(0, 30) : '',
       period: v.period === 'month' ? 'month' : 'all',
       hide: v.hide === true,
@@ -680,7 +731,7 @@ window.addEventListener('error', function (e) {
   }
 
   /* ---------- origens do dinheiro ---------- */
-  function allSources() { return cfg.sources.concat(cfg.demo ? DEMO_SOURCES : []); }
+  function allSources() { return cfg.sources.concat(demoOn() ? DEMO_SOURCES : []); }
   function srcById(id) {
     if (!id) return null;
     var list = allSources();
@@ -719,11 +770,12 @@ window.addEventListener('error', function (e) {
     demoKey = key; demoCache = out;
     return out;
   }
-  function allEntries() { return cfg.demo ? entries.concat(demoList()) : entries; }
+  function allEntries() { return demoOn() ? entries.concat(demoList()) : entries; }
 
   /* ---------- telas ---------- */
   var SCREENS = ['home', 'register', 'inbox', 'evo', 'cal', 'list', 'goal', 'profile'];
   function show(name, keepMonth) {
+    $('v-login').hidden = true;
     if (name === 'home' && !keepMonth) { view = new Date(); view.setDate(1); }
     current = name;
     var setup = name === 'profile' && !cfg.setup;
@@ -1037,8 +1089,11 @@ window.addEventListener('error', function (e) {
     var monthName = now.toLocaleDateString('pt-BR', { month: 'long' });
     $('vlTotal').textContent = cfg.period === 'month' ? 'Recebido em ' + monthName : 'Total recebido';
     $('vlSaved').textContent = cfg.period === 'month' ? 'Guardado em ' + monthName : 'Total guardado';
+    var st = cfg.period === 'month' ? 0 : (cfg.start || 0);
     $('vTotal').textContent = mv(r);
-    $('vSaved').textContent = mv(s);
+    $('vSaved').textContent = mv(s + st);
+    $('vStartNote').hidden = !st || hidden;
+    if (st) $('vStartNote').textContent = 'inclui ' + money(st) + ' que você já tinha';
   }
 
   /* ---------- evolução ---------- */
@@ -1359,7 +1414,7 @@ window.addEventListener('error', function (e) {
   }
   function syncSettings() {
     $('sMeta').value = cfg.meta ? inputMoney(cfg.meta) : '';
-    $('sMeta').placeholder = cfg.demo ? inputMoney(DEMO_META) + ' (exemplo)' : '0,00';
+    $('sMeta').placeholder = demoOn() ? inputMoney(DEMO_META) + ' (exemplo)' : '0,00';
     $('sPct').value = String(cfg.pct);
     Array.prototype.forEach.call(document.querySelectorAll('#chips input'), function (i) { i.checked = cfg.days.indexOf(Number(i.value)) >= 0; });
     updateGoalCalc();
@@ -1375,8 +1430,12 @@ window.addEventListener('error', function (e) {
     $('profBtn').textContent = setup ? 'Começar' : 'Salvar perfil';
     $('pName').value = cfg.name;
     $('pMeta').value = cfg.meta ? inputMoney(cfg.meta) : '';
+    $('pStart').value = cfg.start ? inputMoney(cfg.start) : '';
     $('pHide').checked = cfg.hide;
     $('pDemo').checked = cfg.demo;
+    $('pDemoRow').hidden = !isAdmin;
+    $('acctCard').hidden = !fbUser;
+    if (fbUser) { $('acctEmail').textContent = fbUser.email || ''; $('acctAdm').hidden = !isAdmin; }
     Array.prototype.forEach.call(document.querySelectorAll('input[name="pPeriod"]'), function (i) { i.checked = i.value === cfg.period; });
     $('profMsg').textContent = '';
     $('bkCard').hidden = setup || store !== 'local';
@@ -1387,10 +1446,12 @@ window.addEventListener('error', function (e) {
     $('monthLabel').textContent = capFirst(ml);
     renderHello(); renderHome(); renderHero(); renderToday(); renderEvoStats(); renderSources(); renderEvo(); renderDay(); renderCal(); renderList(); renderInbox();
     if (current === 'register') renderSrcChips();
-    $('demoBar').hidden = !(ready && cfg.demo && (current === 'home' || current === 'evo' || current === 'cal' || current === 'list'));
+    $('demoBar').hidden = !(ready && demoOn() && (current === 'home' || current === 'evo' || current === 'cal' || current === 'list'));
     if (!$('cfgForm').contains(document.activeElement)) syncSettings();
     $('pctHint').textContent = '(sugestão: ' + cfg.pct + '% do Pix)';
-    $('storeNote').textContent = store === 'db'
+    $('storeNote').textContent = fbUser
+      ? 'Seus lançamentos ficam salvos na sua conta (' + (fbUser.email || '') + ') e aparecem em qualquer celular em que você entrar.'
+      : store === 'db'
       ? 'Seus lançamentos ficam salvos no seu espaço privado desta página e aparecem em qualquer aparelho em que você abrir.'
       : 'Sem conta conectada, os lançamentos ficam só neste aparelho. Use "Baixar planilha" em Lançamentos para guardar uma cópia de vez em quando.';
   }
@@ -1479,8 +1540,11 @@ window.addEventListener('error', function (e) {
       meta = raw === '' ? 0 : parseMoney(raw);
       if (isNaN(meta)) { msg.className = 'msg err'; msg.textContent = 'A meta precisa ser um valor, por exemplo 2000,00.'; return; }
     }
+    var sraw = $('pStart').value.trim();
+    var start = sraw === '' ? 0 : parseMoney(sraw);
+    if (isNaN(start) || start < 0) { msg.className = 'msg err'; msg.textContent = 'O valor que você já tem precisa ser um número, por exemplo 1500,00.'; return; }
     try {
-      await saveCfg(Object.assign({}, cfg, { name: name, period: sel ? sel.value : 'all', hide: $('pHide').checked, demo: $('pDemo').checked, setup: true, meta: meta }));
+      await saveCfg(Object.assign({}, cfg, { start: start, name: name, period: sel ? sel.value : 'all', hide: $('pHide').checked, demo: isAdmin ? $('pDemo').checked : false, setup: true, meta: meta }));
       hidden = cfg.hide;
       show('home');
       flash(wasSetup ? 'Tudo pronto, ' + name + '. Registre seu primeiro Pix.' : 'Perfil salvo.');
@@ -1728,6 +1792,13 @@ window.addEventListener('error', function (e) {
     }
     if (t.dataset.act === 'export') { exportCsv(); return; }
     if (t.dataset.act === 'bk-save') { saveBackup(); return; }
+    if (t.dataset.act === 'logout') {
+      if (!fb) return;
+      t.disabled = true;
+      try { await fb.signOut(fb.auth); } catch (e) {}
+      location.reload();
+      return;
+    }
     if (t.dataset.act === 'reg-day') {
       show('register');
       $('fDate').value = t.dataset.date; dateTouched = true;
@@ -1798,9 +1869,157 @@ window.addEventListener('error', function (e) {
     syncSettings(); renderAll(); boot();
   }
 
+  /* ---------- login com e-mail (Firebase) ---------- */
+  function lgMsg(text, err) { var m = $('lgMsg'); m.className = err ? 'msg err' : 'msg'; m.textContent = text; }
+  function lgSetMode(mode) {
+    lgMode = mode;
+    $('lgBtn').textContent = mode === 'up' ? 'Criar conta' : 'Entrar';
+    $('lgSwitch').textContent = mode === 'up' ? 'Já tem conta? Entrar' : 'Não tem conta? Criar conta';
+    $('lgPass').setAttribute('autocomplete', mode === 'up' ? 'new-password' : 'current-password');
+    $('lgForgot').hidden = mode === 'up';
+    lgMsg('');
+  }
+  function showLogin() {
+    SCREENS.forEach(function (n) { $('v-' + n).hidden = true; });
+    $('topbar').hidden = true; $('demoBar').hidden = true; $('toast').hidden = true;
+    document.body.setAttribute('data-screen', 'setup');
+    $('v-login').hidden = false;
+    $('bootMsg').hidden = true;
+  }
+  function authText(e) {
+    var c = e && e.code || '';
+    if (/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return 'E-mail ou senha incorretos.';
+    if (/email-already-in-use/.test(c)) return 'Esse e-mail já tem conta. Toque em "Já tem conta? Entrar".';
+    if (/weak-password/.test(c)) return 'A senha precisa ter pelo menos 6 caracteres.';
+    if (/invalid-email|missing-email/.test(c)) return 'Esse e-mail não parece certo. Confira e tente de novo.';
+    if (/network/.test(c)) return 'Sem internet agora. Conecte e tente de novo.';
+    if (/too-many-requests/.test(c)) return 'Muitas tentativas. Espere alguns minutos e tente de novo.';
+    if (/api-key|invalid-api|app-not-authorized|unauthorized-domain/.test(c)) return 'O login ainda não está liberado para este endereço. Confira a configuração do Firebase.';
+    if (/operation-not-allowed/.test(c)) return 'O login por e-mail ainda não foi ligado no Firebase.';
+    return 'Não consegui entrar agora. Tente de novo.';
+  }
+  $('lgShow').addEventListener('click', function () {
+    var on = $('lgPass').type === 'password';
+    $('lgPass').type = on ? 'text' : 'password';
+    this.textContent = on ? 'Esconder' : 'Mostrar';
+    this.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  $('lgSwitch').addEventListener('click', function () { lgSetMode(lgMode === 'up' ? 'in' : 'up'); });
+  $('lgForgot').addEventListener('click', async function () {
+    var email = $('lgEmail').value.trim();
+    if (!email) { lgMsg('Digite seu e-mail acima e toque em "Esqueci minha senha" de novo.', true); $('lgEmail').focus(); return; }
+    if (!fb) { lgMsg('Ainda carregando, tente de novo em instantes.', true); return; }
+    try { await fb.sendPasswordResetEmail(fb.auth, email); lgMsg('Se esse e-mail tiver conta, mandei um link para criar uma senha nova. Veja também o spam.'); }
+    catch (e) { lgMsg(authText(e), true); }
+  });
+  $('lgForm').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var email = $('lgEmail').value.trim(), pass = $('lgPass').value;
+    if (!email) { lgMsg('Digite seu e-mail.', true); $('lgEmail').focus(); return; }
+    if (pass.length < 6) { lgMsg('A senha precisa ter pelo menos 6 caracteres.', true); $('lgPass').focus(); return; }
+    if (!fb) { lgMsg('Ainda carregando, tente de novo em instantes.', true); return; }
+    var b = $('lgBtn'); b.disabled = true; lgMsg(lgMode === 'up' ? 'Criando sua conta…' : 'Entrando…');
+    try {
+      if (lgMode === 'up') await fb.createUserWithEmailAndPassword(fb.auth, email, pass);
+      else await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+    } catch (e) { lgMsg(authText(e), true); }
+    b.disabled = false;
+  });
+
+  function fbCollection(uid) {
+    var ref = fb.collection(fb.db, 'users', uid, 'data');
+    var report = function (e) { flash('Não consegui salvar na sua conta. Confira a internet.'); try { console.warn(e); } catch (x) {} };
+    return {
+      doc: function (id) {
+        var d = id ? fb.doc(ref, id) : fb.doc(ref);
+        return {
+          set: function (v) { fb.setDoc(d, v).catch(report); return Promise.resolve(); },
+          delete: function () { fb.deleteDoc(d).catch(report); return Promise.resolve(); }
+        };
+      },
+      onSnapshot: function (cb, err) { return fb.onSnapshot(ref, { includeMetadataChanges: false }, cb, err); }
+    };
+  }
+  function localLegacy() {
+    try {
+      if (localStorage.getItem('sorted-cents-migrated')) return null;
+      var raw = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
+      if (raw && raw.cfg && (raw.cfg.setup || (Array.isArray(raw.entries) && raw.entries.length))) return raw;
+    } catch (e) {}
+    return null;
+  }
+  async function migrateLocal(raw) {
+    try { localStorage.setItem('sorted-cents-migrated', '1'); } catch (e) {}
+    var c2 = normCfg(raw.cfg);
+    if (!isAdmin) c2.demo = false;
+    await col.doc('cfg').set(c2);
+    (raw.entries || []).forEach(function (e) {
+      if (!e || typeof e.date !== 'string') return;
+      var copy = Object.assign({}, e); var id = copy.id; delete copy.id;
+      col.doc(id || null).set(copy);
+    });
+  }
+  function fbSignedIn(user) {
+    fbUser = user;
+    isAdmin = String(user.email || '').toLowerCase() === ADMIN_EMAIL;
+    col = fbCollection(user.uid);
+    store = 'db';
+    var gotServer = false, legacy = localLegacy();
+    var bootTimer = setTimeout(function () { if (!ready) { ready = true; renderAll(); boot(); } }, 5000);
+    fbUnsub = col.onSnapshot(function (snap) {
+      var list = [], c2 = null;
+      snap.docs.forEach(function (d) {
+        var v = d.data() || {};
+        if (d.id === 'cfg') c2 = v; else list.push(Object.assign({ id: d.id }, v));
+      });
+      var fromCache = snap.metadata && snap.metadata.fromCache;
+      if (!c2 && !list.length && fromCache && !gotServer) return;
+      if (!fromCache) gotServer = true;
+      if (!c2 && !list.length && legacy) { var l = legacy; legacy = null; migrateLocal(l); return; }
+      entries = list;
+      cfg = c2 ? normCfg(c2) : Object.assign({}, DEFAULT_CFG, { demo: isAdmin });
+      if (!isAdmin) cfg.demo = false;
+      ready = true; clearTimeout(bootTimer);
+      renderAll(); boot();
+    }, function () {
+      clearTimeout(bootTimer);
+      flash('Não consegui abrir sua conta agora. Confira a internet e abra o app de novo.');
+    });
+  }
+  async function fbInit() {
+    showLogin(); lgSetMode('in');
+    lgMsg('Carregando…');
+    try {
+      var base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
+      var mods = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
+      fb = Object.assign({}, mods[0], mods[1], mods[2]);
+      var app = fb.initializeApp(FB_CONFIG);
+      fb.auth = fb.getAuth(app);
+      fb.auth.languageCode = 'pt';
+      try { fb.db = fb.initializeFirestore(app, { localCache: fb.persistentLocalCache(), ignoreUndefinedProperties: true }); }
+      catch (e) { fb.db = fb.getFirestore(app); }
+    } catch (e) {
+      lgMsg('Não consegui carregar o login. Conecte na internet e abra o app de novo.', true);
+      return;
+    }
+    lgMsg('');
+    fb.onAuthStateChanged(fb.auth, function (user) {
+      if (user) { if (!fbUser) fbSignedIn(user); }
+      else if (fbUser) { location.reload(); }
+      else { showLogin(); }
+    });
+  }
+
   async function init() {
     var c = window.claude;
-    if (!c || !c.use) { startLocal(''); return; }
+    if (!c || !c.use) {
+      if (FB_CONFIG || window.__FB_MOCK) {
+        if (window.__FB_MOCK) { fb = window.__FB_MOCK; showLogin(); lgSetMode('in'); fb.onAuthStateChanged(fb.auth, function (u) { if (u) { if (!fbUser) fbSignedIn(u); } else showLogin(); }); return; }
+        fbInit(); return;
+      }
+      startLocal(''); return;
+    }
+    isAdmin = true;
     try {
       var got = await Promise.all([c.use('db'), c.use('user'), c.use('downloads')]);
       var db = got[0], user = got[1];
